@@ -23,15 +23,21 @@ public class SSOController {
     /**
      * 校验用户权限，提供给子系统调用
      * @param token 登陆时生成的token
-     * @param moduleId 模块
+     * @param moduleKey 模块
      * @param actionId 操作
      */
     @GetMapping("checkPrivilege")
-    public Object checkToken(String token,Integer moduleId,Integer actionId) throws IOException {
-        ssoAuthService.checkPrivilege(token, moduleId, actionId);
+    public Object checkToken(String token,String moduleKey,Integer actionId) throws IOException {
+        ssoAuthService.checkPrivilege(token, moduleKey, actionId);
         return ToWeb.buildResult().putExtra("isOk", true);
     }
 
+    /**
+     * 注册模块
+     * @param hostAuthKey
+     * @param urls
+     * @return
+     */
     @PostMapping("moduleRegister")
     public Object moduleRegister(String hostAuthKey, @RequestParam("dataUrls[]") List<String> urls){
         urls.remove(urls.size()-1);

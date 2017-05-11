@@ -3,6 +3,8 @@ package com.jerryl.auth.controller.manage;
 import com.jerryl.auth.common.Status;
 import com.jerryl.auth.common.ToWeb;
 import com.jerryl.auth.common.exception.BaseException;
+import com.jerryl.auth.dao.mapper.AuthHostMapper;
+import com.jerryl.auth.dao.model.AuthHost;
 import com.jerryl.auth.service.PassportService;
 import com.jerryl.auth.service.SSOAuthService;
 import com.jerryl.auth.service.dto.RegisterForm;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Created by liuruijie on 2017/4/8.
@@ -29,7 +32,7 @@ public class PublicController {
     @Autowired
     PassportService passportService;
     @Autowired
-    Environment env;
+    AuthHostMapper authHostMapper;
 
     @PostMapping("login")
     public Object login(HttpServletRequest request, HttpServletResponse response, String id, String password, String backToUrl){
@@ -49,12 +52,12 @@ public class PublicController {
         }
 
         //设置cookie域
-        String s = env.getProperty("auth-client-hosts");
-        String[] clientHosts = s.split(",");
+        Set<String> clientHosts = authHostMapper.selectHostIps();
 
+//        System.out.println(token);
         //将token和返回地址一同返回给前台
         return ToWeb.buildResult().putExtra("token", token)
-                .putExtra("hosts", clientHosts)
+                .putExtra("hosts", clientHosts.toArray(new String[clientHosts.size()]))
                 .putExtra("backToUrl", backToUrl);
     }
 

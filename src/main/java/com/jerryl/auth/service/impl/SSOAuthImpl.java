@@ -43,12 +43,12 @@ public class SSOAuthImpl implements SSOAuthService{
     /**
      * 查询数据库，校验用户权限
      * @param token 票据
-     * @param moduleId 模块
+     * @param moduleKey 模块
      * @param actionId 操作
      * @throws IOException
      */
     @Override
-    public void checkPrivilege(String token, Integer moduleId, Integer actionId) throws IOException {
+    public void checkPrivilege(String token, String moduleKey, Integer actionId) throws IOException {
         //解码token
         BASE64Decoder decoder = new BASE64Decoder();
         token = new String(decoder.decodeBuffer(token));
@@ -57,6 +57,9 @@ public class SSOAuthImpl implements SSOAuthService{
         if (user==null){
             throw new BaseException("haven't login yet!", Status.NO_LOGIN);
         }
+
+        Integer moduleId = moduleMapper.getIdByKey(moduleKey);
+
         //查询数据库校验权限
         if(!privilegeService.checkPrivilege(user
                 , moduleId
@@ -75,6 +78,7 @@ public class SSOAuthImpl implements SSOAuthService{
         Integer hostId = authHost.getHostId();
         registerModule(hostId, metaDataUrls);
 
+        //异步发送所有请求，获取模块信息
         for (String url: metaDataUrls){
             HttpUtil.RequestConfig config = new HttpUtil.RequestConfig(url, "GET");
             HttpUtil.sendRequest(config, new HttpUtil.ResponseListener() {

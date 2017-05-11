@@ -10,8 +10,10 @@ LOGIN = function (id,psw,backToUrl,success) {
         success();
         var token = data.extra.token;
         var hosts = data.extra.hosts;
+        // alert(hosts)
+        $.cookie("token", token);
         $.each(hosts, function (n, v) {
-           $.cookie("token", token, {domain:v});
+            $.cookie("token", token,{domain:v});
         });
         window.location.href = data.extra.backToUrl;
     })

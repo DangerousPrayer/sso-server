@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by liuruijie on 2017/5/11.
@@ -30,10 +31,13 @@ public interface AuthHostMapper extends PageMapper<AuthHost>{
     @Select("select * from "+tableName+" where host_auth_key=#{key}")
     AuthHost selectByAuthKey(@Param("key")String authKey);
 
+    @Select("select host_ip from "+tableName)
+    Set<String> selectHostIps();
+
     class AuthHostSqlProvider extends PageSqlProvider{
         @Override
         protected SQL preSql() {
-            return new SQL().SELECT(tableName);
+            return new SQL().FROM(tableName);
         }
 
         public String updateSelective(@Param("host")AuthHost host){

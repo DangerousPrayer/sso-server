@@ -13,5 +13,3 @@ spring:
     auto: true
 server:
   port: 8081
-
-auth-client-hosts: 127.0.0.1:8081,127.0.0.1

@@ -8,7 +8,7 @@
 <div id="top"></div>
 <a href="">新增系统</a>
 <table id="host-tb" border="1">
-    <script id="host" type="text/html">
+    <script id="hosts" type="text/html">
         <tr>
             <td>id</td>
             <td>ip</td>
@@ -24,7 +24,7 @@
             <td>{{$value.authTime}}</td>
             <td>{{$value.status}}</td>
             <td>
-                <a href="host-details.html?id={{$value.id}}">详细</a>
+                <a href="host-details.html?id={{$value.hostId}}">详细</a>
             </td>
         </tr>
         {{/each}}

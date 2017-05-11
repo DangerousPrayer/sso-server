@@ -26,6 +26,9 @@ public interface ModuleMapper {
     @Delete("delete from "+tableName+" where id=#{id}")
     int deleteOne(@Param("id") Integer id);
 
+    @Select("select id from "+tableName+" where module_key=#{key}")
+    Integer getIdByKey(@Param("key") String moduleKey);
+
     @SelectProvider(type = ModuleSqlProvider.class, method = "findAll")
     List<Module> findAll(@Param("page") PageRequest pageRequest);
 

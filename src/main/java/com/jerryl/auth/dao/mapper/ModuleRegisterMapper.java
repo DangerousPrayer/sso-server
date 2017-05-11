@@ -34,7 +34,7 @@ public interface ModuleRegisterMapper extends PageMapper<ModuleRegister>{
     class ModuleRegisterSqlProvider extends PageSqlProvider{
         @Override
         protected SQL preSql() {
-            return new SQL().SELECT(tableName);
+            return new SQL().FROM(tableName);
         }
 
         public String updateSelective(@Param("register")ModuleRegister register){
