@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限管理</title>
+</head>
+<body>
+<div id="top"></div>
+<table id="roles-tb" border="1">
+    <script id="roles" type="text/html">
+    <tr>
+        <td>id</td>
+        <td>角色名</td>
+        <td>操作</td>
+    </tr>
+    {{each rows.list}}
+        <tr>
+            <td>{{$value.id}}</td>
+            <td>{{$value.roleName}}</td>
+            <td>
+                <a href="privilege-details.html?id={{$value.id}}">权限</a>
+            </td>
+        </tr>
+    {{/each}}
+    </script>
+</table>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+    AJAX.GET("/roles",null
+    ,function (data) {
+            var html = template("roles", data);
+            $("#roles-tb").html(html);
+        })
+</script>
+
+</body>
+</html>

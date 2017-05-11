@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详细信息</title>
+</head>
+<body>
+<div id="top"></div>
+<h3>用户信息</h3>
+    <table id="user-tb" border="1">
+        <script id="user-info" type="text/html">
+            <tr>
+                <td>id</td>
+                <td>{{id}}</td>
+                <td>账号</td>
+                <td>{{passportId}}</td>
+            </tr>
+            <tr>
+                <td colspan="1">昵称</td>
+                <td colspan="3">{{nickName}}</td>
+            </tr>
+            <tr>
+                <td colspan="1">email</td>
+                <td colspan="3">{{email}}</td>
+            </tr>
+            <tr>
+                <td colspan="1">phone</td>
+                <td colspan="3">{{phone}}</td>
+            </tr>
+        </script>
+    </table>
+<hr>
+    <h3>角色权限</h3>
+<table border="1" id="privilege-tb">
+    <script id="privileges" type="text/html">
+        <tr><td>角色名</td><td></td></tr>
+        {{each obj}}
+    <tr>
+        <td>{{$value.roleName}}</td>
+        <td><input type="checkbox" value="{{$value.id}}"></td>
+    </tr>
+        {{/each}}
+</script>
+</table>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+    AJAX.GET("/users/"+getQueryString("id"),null,
+        function (data) {
+            var obj = data.obj;
+            var html = template("user-info", obj);
+            $("#user-tb").html(html);
+            AJAX.GET("/privilege/roles", null
+                , function (data) {
+                    var html = template("privileges", data);
+                    $("#privilege-tb").html(html);
+                    AJAX.GET("/privilege/roles",{passportId: obj.passportId}
+                        ,function (data) {
+                            var obj = data.obj;
+                            $.each(obj, function (n, v) {
+                                $("#privilege-tb input[value="+v+"]").attr("checked", "checked");
+                            })
+                        })
+                })
+        });
+
+</script>
+
+</body>
+</html>

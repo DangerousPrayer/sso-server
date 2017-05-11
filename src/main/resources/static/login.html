@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+</head>
+<body>
+<div id="top"></div>
+<h1 align="center">统一认证中心</h1>
+<hr>
+<form name="login-form">
+    <table align="center">
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" name="id"></td>
+        </tr>
+        <tr>
+            <td>密码：</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td><input id="login-btn" type="button" value="登陆"></td>
+            <td><input id="register-btn" type="button" value="注册"></td>
+        </tr>
+    </table>
+</form>
+
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+<script src="js/template.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+
+    //将数组格式的表单数据，转换为json对象
+    function toObj(arr){
+        var obj = {};
+        $.each(arr, function (n,v){
+            if(obj[v.name]){
+                if(obj[v.name] instanceof Array){
+                    obj[v.name].push(v.value);
+                }else{
+                    var temp = obj[v.name];
+                    obj[v.name] = [];
+                    obj[v.name].push(temp);
+                    obj[v.name].push(v.value);
+                }
+            }
+            else{
+                obj[v.name] = v.value;
+            }
+        });
+        return obj;
+    }
+
+    $("#login-btn").click(function () {
+        login();
+    });
+
+    $("#register-btn").click(function () {
+        window.location.href = "register.html?backToUrl="+getQueryString("backToUrl");
+    });
+
+    function login() {
+        var form = $("form[name=login-form]").serializeArray();
+        var params = toObj(form);
+        var backToUrl = getQueryString("backToUrl");
+        LOGIN(params["id"], params["password"], backToUrl);
+    }
+</script>
+</body>
+</html>

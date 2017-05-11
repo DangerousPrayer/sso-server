@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册新用户</title>
+</head>
+<body>
+<div id="top"></div>
+<h2 align="center">注册新用户</h2>
+<hr>
+    <form name="register-form">
+        <table align="center">
+            <tr>
+                <td>
+                    用户名（5-12个字符）：
+                </td>
+                <td>
+                    <input name="account" type="text">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    昵称（5-12个字符）：
+                </td>
+                <td>
+                    <input name="nickName" type="text">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    手机号：
+                </td>
+                <td>
+                    <input name="phone" type="tel">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    邮箱地址:
+                </td>
+                <td>
+                    <input name="email" type="email">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    密码（6-20个字符）：
+                </td>
+                <td>
+                    <input name="password" type="password">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    确认密码：
+                </td>
+                <td>
+                    <input name="password2" type="password">
+                </td>
+            </tr>
+            <tr>
+                <td><input id="submit-btn" type="button" value="提交并注册"></td>
+            </tr>
+        </table>
+    </form>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+<script src="js/template.js"></script>
+
+<script>
+    //将数组格式的表单数据，转换为json对象
+    function toObj(arr){
+        var obj = {};
+        $.each(arr, function (n,v){
+            if(obj[v.name]){
+                if(obj[v.name] instanceof Array){
+                    obj[v.name].push(v.value);
+                }else{
+                    var temp = obj[v.name];
+                    obj[v.name] = [];
+                    obj[v.name].push(temp);
+                    obj[v.name].push(v.value);
+                }
+            }
+            else{
+                obj[v.name] = v.value;
+            }
+        });
+        return obj;
+    }
+
+    AJAX.INCLUDE("template/top.html", "top");
+    $("#submit-btn").click(function () {
+        var form = $("form[name=register-form]").serializeArray();
+        var obj = toObj(form);
+        if(!/^\w{5,12}$/.test(obj.id)){
+            alert("用户名不合法！");
+            return;
+        }else if(!/^\w{5,12}$/.test(obj.nickName)){
+            alert("昵称不合法！");
+        }else if(!/\d{11}/){
+            alert("手机号不合法！")
+        }
+        else if(!/^(.+)@(.+)$/){
+            alert("邮箱地址不合法！")
+        }
+        else if(!/^\w{6,20}$/.test(obj.password)){
+            alert("密码不合法！");
+        }else if(obj.password!=obj.password2){
+            alert("两次密码不一致！");
+        }else{
+            //验证通过，提交并注册
+            obj.backToUrl = getQueryString("backToUrl");
+            AJAX.POST_JSON("/public/register", JSON.stringify(obj), function (data) {
+                //注册成功，登陆用户
+                LOGIN(obj.account, obj.password, obj.backToUrl);
+            });
+        }
+    })
+</script>
+</body>
+</html>

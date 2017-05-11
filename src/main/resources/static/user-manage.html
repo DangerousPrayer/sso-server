@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+</head>
+<body>
+<div id="top"></div>
+<table id="users-tb" border="1">
+    <script id="users" type="text/html">
+        <tr>
+            <td>id</td>
+            <td>账号</td>
+            <td>昵称</td>
+            <td>email</td>
+            <td>电话</td>
+            <td>操作</td>
+        </tr>
+        {{each rows.list}}
+        <tr>
+            <td>{{$value.id}}</td>
+            <td>{{$value.passportId}}</td>
+            <td>{{$value.nickName}}</td>
+            <td>{{$value.email}}</td>
+            <td>{{$value.phone}}</td>
+            <td>
+                <a href="user-details.html?id={{$value.id}}">详细</a>
+                <a href="user-edit.html?id={{$value.id}}">编辑</a>
+                <a href="javascript: delUser({{$value.id}})">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+</table>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+
+    AJAX.GET("/users", null
+        , function (data) {
+            var html = template("users", data);
+            $("#users-tb").html(html);
+        })
+
+    function delUser(id) {
+        if(confirm("删除？")){
+            AJAX.DELETE('/users/'+id)
+        }
+    }
+</script>
+</body>
+</html>

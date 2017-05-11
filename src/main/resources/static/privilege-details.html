@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>权限分配</title>
+</head>
+<body>
+<div id="top"></div>
+<table style="text-align: center" width="400px" border="1" id="role-module-tb">
+    <script id="role-module" type="text/html">
+    <tr>
+        <td>角色</td>
+        <td>{{role.roleName}}</td>
+        <td>模块</td>
+        <td>
+            <select id="module-select">
+            {{each modules}}
+                <option value="{{$value.id}}">
+                    {{$value.moduleName}}
+                </option>
+            {{/each}}
+            </select>
+        </td>
+    </tr>
+    </script>
+</table>
+<form name="action-form">
+<table width="400px" border="1" id="actions-tb">
+    <script id="actions" type="text/html">
+        <tr><td width="360px">操作</td><td></td></tr>
+        {{each obj}}
+        <tr>
+            <td>
+                {{$value.actionName}}
+            </td>
+            <td>
+                <input name="actions" type="checkbox" value="{{$value.actionId}}">
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+</table>
+</form>
+<input id="saveRoleActions" type="button" value="保存">
+
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+    //将数组格式的表单数据，转换为json对象
+    function toObj(arr){
+        var obj = {};
+        $.each(arr, function (n,v){
+            if(obj[v.name]){
+                if(obj[v.name] instanceof Array){
+                    obj[v.name].push(v.value);
+                }else{
+                    var temp = obj[v.name];
+                    obj[v.name] = [];
+                    obj[v.name].push(temp);
+                    obj[v.name].push(v.value);
+                }
+            }
+            else{
+                obj[v.name] = v.value;
+            }
+        });
+        return obj;
+    }
+    AJAX.GET("/roles/"+getQueryString("id"),null,function (roleData) {
+        AJAX.GET("/modules",null,function (modulesData) {
+            var role = roleData.obj;
+            var obj = {};
+            obj.role = role;
+            var modules = modulesData.rows.list;
+            obj.modules = modules;
+            var html = template("role-module", obj);
+            $("#role-module-tb").html(html);
+
+            AJAX.GET("/actions",null,function (data) {
+                var html = template("actions", data);
+                $("#actions-tb").html(html);
+
+                $("#module-select").change(function () {
+                    uncheckedAll();
+                    var moduleId=$(this).find("option:selected").val();
+                    AJAX.GET("/privilege/actions",{roleId: roleData.obj.id,moduleId:moduleId}
+                    ,function (data) {
+                            var obj = data.obj;
+                            $.each(obj, function (n, v) {
+                                $("#actions-tb input[value="+v+"]").prop("checked", true);
+                            })
+                        })
+                });
+
+                $("#module-select").change();
+
+                $("#saveRoleActions").click(function () {
+                    var form = $("form[name=action-form]").serializeArray();
+                    var obj = toObj(form);
+                    if(obj.actions instanceof Array){
+
+                    }else{
+                        var temp = obj.actions;
+                        obj.actions = [];
+                        obj.actions.push(temp);
+                    }
+                    obj.roleId = roleData.obj.id;
+                    obj.moduleId = $("#module-select option:selected").val();
+
+                    AJAX.POST("/privilege/saveRoleActions",obj);
+                });
+            })
+        })
+    })
+
+    function uncheckedAll() {
+        var actionBoxes = $("input[name=actions]");
+        $.each(actionBoxes, function (n, v) {
+            $(v).attr("checked", false);
+        })
+    }
+</script>
+</body>
+</html>

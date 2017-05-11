@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>请输入初始化数据库口令</title>
+</head>
+<body>
+<form>
+    初始化口令：<input name="key" type="password">
+    <input id="confirm-btn" type="button" value="确认重置">
+    <input id="back-btn" type="button" value="返回">
+</form>
+
+<script src="../js/jquery-1.10.2.min.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../js/template.js"></script>
+<script src="../js/ajax-util.js"></script>
+<script src="../js/sso.js"></script>
+
+<script>
+    $("#confirm-btn").click(function () {
+        var key = $("input[name=key]").val();
+        AJAX.POST("/db/init", {key: key});
+    })
+</script>
+</body>
+</html>
