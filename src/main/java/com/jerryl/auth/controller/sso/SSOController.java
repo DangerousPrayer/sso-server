@@ -1,13 +1,14 @@
 package com.jerryl.auth.controller.sso;
 
 import com.jerryl.auth.common.ToWeb;
+import com.jerryl.auth.dao.model.ModuleRegister;
 import com.jerryl.auth.service.SSOAuthService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by liuruijie on 2017/4/12.
@@ -29,5 +30,12 @@ public class SSOController {
     public Object checkToken(String token,Integer moduleId,Integer actionId) throws IOException {
         ssoAuthService.checkPrivilege(token, moduleId, actionId);
         return ToWeb.buildResult().putExtra("isOk", true);
+    }
+
+    @PostMapping("moduleRegister")
+    public Object moduleRegister(String hostAuthKey, @RequestParam("dataUrls[]") List<String> urls){
+        urls.remove(urls.size()-1);
+        ssoAuthService.registerHost(hostAuthKey, urls);
+        return ToWeb.buildResult();
     }
 }

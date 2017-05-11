@@ -38,6 +38,9 @@ public interface ModuleMapper {
             return new SQL(){
                 {
                     INSERT_INTO(tableName);
+                    if(module.getModuleKey()!=null){
+                        VALUES("module_key", "#{module.moduleKey}");
+                    }
                     if(module.getModuleName()!=null){
                         VALUES("module_name", "#{module.moduleName}");
                     }
@@ -51,9 +54,9 @@ public interface ModuleMapper {
                         module.setCreateDate(new Date());
                         VALUES("create_date", "#{module.createDate}");
                     }
-                    if(module.getCreatePassport()!=null){
-                        VALUES("create_passport", "#{module.createPassport}");
-                    }
+//                    if(module.getCreatePassport()!=null){
+//                        VALUES("create_passport", "#{module.createPassport}");
+//                    }
                 }
             }.toString();
         }
@@ -62,6 +65,9 @@ public interface ModuleMapper {
             return new SQL(){
                 {
                     UPDATE(tableName);
+                    if(module.getModuleKey()!=null){
+                        SET("module_key=#{module.moduleKey}");
+                    }
                     if(module.getModuleName()!=null){
                         SET("module_name = #{module.moduleName}");
                     }

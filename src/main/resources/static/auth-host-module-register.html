@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模块注册</title>
+</head>
+<body>
+<div id="top"></div>
+
+<form name="module-register-form">
+    <table>
+        <tr>
+            <td>hostAuthKey</td>
+            <td><input name="hostAuthKey" type="text"></td>
+        </tr>
+        <tr>
+            <td>模块元数据url</td>
+            <td><input type="text" name="dataUrls"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="hidden" name="dataUrls"></td>
+        </tr>
+        <tr>
+            <td><input id="submit-btn" type="button" value="提交"></td>
+        </tr>
+    </table>
+</form>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+    //将数组格式的表单数据，转换为json对象
+    function toObj(arr){
+        var obj = {};
+        $.each(arr, function (n,v){
+            if(obj[v.name]){
+                if(obj[v.name] instanceof Array){
+                    obj[v.name].push(v.value);
+                }else{
+                    var temp = obj[v.name];
+                    obj[v.name] = [];
+                    obj[v.name].push(temp);
+                    obj[v.name].push(v.value);
+                }
+            }
+            else{
+                obj[v.name] = v.value;
+            }
+        });
+        return obj;
+    }
+    $("#submit-btn").click(function () {
+        var form = $("form[name=module-register-form]").serializeArray();
+        AJAX.POST("/sso/moduleRegister", toObj(form));
+    })
+</script>
+</body>
+</html>

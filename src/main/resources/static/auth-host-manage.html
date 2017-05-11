@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统认证管理</title>
+</head>
+<body>
+<div id="top"></div>
+<a href="">新增系统</a>
+<table id="host-tb" border="1">
+    <script id="host" type="text/html">
+        <tr>
+            <td>id</td>
+            <td>ip</td>
+            <td>key</td>
+            <td>认证时间</td>
+            <td>状态</td>
+        </tr>
+        {{each rows.list}}
+        <tr>
+            <td>{{$value.hostId}}</td>
+            <td>{{$value.hostIp}}</td>
+            <td>{{$value.hostAuthKey}}</td>
+            <td>{{$value.authTime}}</td>
+            <td>{{$value.status}}</td>
+            <td>
+                <a href="host-details.html?id={{$value.id}}">详细</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+</table>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/template.js"></script>
+<script src="js/ajax-util.js"></script>
+<script src="js/sso.js"></script>
+
+<script>
+    AJAX.INCLUDE("template/top.html", "top");
+
+    AJAX.GET("/auth-hosts", null
+        , function (data) {
+            var html = template("hosts", data);
+            $("#host-tb").html(html);
+        })
+
+</script>
+
+</body>
+</html>

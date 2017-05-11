@@ -7,11 +7,12 @@ import java.util.Date;
  */
 public class Module {
     private Integer id;
+    private String moduleKey;
     private String moduleName;
     private Integer sort;
     private String url;
     private Date createDate;
-    private String createPassport;
+//    private String createPassport;
 
     public Integer getId() {
         return id;
@@ -53,11 +54,19 @@ public class Module {
         this.createDate = createDate;
     }
 
-    public String getCreatePassport() {
-        return createPassport;
+    public String getModuleKey() {
+        return moduleKey;
     }
 
-    public void setCreatePassport(String createPassport) {
-        this.createPassport = createPassport;
+    public void setModuleKey(String moduleKey) {
+        this.moduleKey = moduleKey;
     }
+
+//    public String getCreatePassport() {
+//        return createPassport;
+//    }
+//
+//    public void setCreatePassport(String createPassport) {
+//        this.createPassport = createPassport;
+//    }
 }
